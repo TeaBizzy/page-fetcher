@@ -2,14 +2,23 @@ const request = require("request");
 const args = process.argv.slice(2);
 const fs = require("fs");
 
-request(`${args[0]}}`, (error, response, body) => {
-  if(error) {
+const URL = args[0];
+const filePath = args[1];
+
+// Make a request to the specified URL:
+request(`${URL}}`, (error, response, body) => {
+  if (error) {
     console.log(`Encountered ERROR ${response}`);
     return;
   }
-  fs.writeFile(args[1], body, onWritingDone);
+
+  if (filePath) {
+    fs.writeFile(filePath, body, onWritingDone); // Writes the file to the filepath
+  }
 });
 
+// Logs a message for the user to know the file was written successfully.
 const onWritingDone = function() {
-  console.log(`Downloaded and saved ${fs.statSync(args[1]).size} bytes to ${args[1]}`)
+  const fileStats = fs.statSync(filePath).size;
+  console.log(`Downloaded and saved ${fileStats} bytes to ${filePath}`);
 };
